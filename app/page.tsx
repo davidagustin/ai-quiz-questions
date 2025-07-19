@@ -1,103 +1,107 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import { quizData } from './data/quizData';
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const categoryIcons = {
+    numpy_fundamentals: '🧮',
+    pandas_operations: '📊',
+    prompt_engineering: '💬',
+    ml_fundamentals: '🤖',
+    spatial_data: '🌐'
+  };
+
+  const categoryColors = {
+    numpy_fundamentals: 'from-blue-500 to-cyan-500',
+    pandas_operations: 'from-green-500 to-emerald-500',
+    prompt_engineering: 'from-purple-500 to-pink-500',
+    ml_fundamentals: 'from-orange-500 to-red-500',
+    spatial_data: 'from-indigo-500 to-blue-600'
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      {/* Header */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-bold text-white mb-4">
+            🧠 MLI Learning Quiz
+          </h1>
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            Master complex concepts through interactive quizzes and powerful memory aids. 
+            Choose a category below to start your learning journey!
+          </p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/* Quiz Categories Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {Object.entries(quizData).map(([key, category]) => (
+            <Link key={key} href={`/quiz/${key}`}>
+              <div
+                className={`relative group cursor-pointer transform transition-all duration-300 hover:scale-105 hover:rotate-1`}
+                onMouseEnter={() => setHoveredCategory(key)}
+                onMouseLeave={() => setHoveredCategory(null)}
+              >
+                {/* Card Background */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${categoryColors[key as keyof typeof categoryColors]} rounded-2xl opacity-80 group-hover:opacity-100 transition-opacity duration-300`} />
+                
+                {/* Card Content */}
+                <div className="relative bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-2xl">
+                  {/* Icon */}
+                  <div className="text-4xl mb-4 text-center">
+                    {categoryIcons[key as keyof typeof categoryIcons]}
+                  </div>
+                  
+                  {/* Title */}
+                  <h3 className="text-2xl font-bold text-white mb-3 text-center">
+                    {category.title}
+                  </h3>
+                  
+                  {/* Description */}
+                  <p className="text-gray-200 text-center mb-4 leading-relaxed">
+                    {category.description}
+                  </p>
+                  
+                  {/* Stats */}
+                  <div className="flex justify-between items-center text-sm text-gray-300">
+                    <span>{category.questions.length} Questions</span>
+                    <span className="bg-white/20 px-3 py-1 rounded-full">
+                      {Object.keys(category.mnemonics).length} Mnemonics
+                    </span>
+                  </div>
+                  
+                  {/* Hover Effect */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${categoryColors[key as keyof typeof categoryColors]} rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300`} />
+                  
+                  {/* Arrow */}
+                  <div className="absolute top-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    →
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* Footer */}
+        <div className="text-center mt-16 text-gray-400">
+          <p className="text-lg">
+            🎓 Master your MLI precourse knowledge with interactive quizzes and powerful mnemonics
+          </p>
+          <div className="flex justify-center space-x-6 mt-6">
+            <Link href="/mnemonics" className="text-blue-400 hover:text-blue-300 transition-colors">
+              📚 View All Mnemonics
+            </Link>
+            <Link href="/progress" className="text-green-400 hover:text-green-300 transition-colors">
+              📊 Track Progress
+            </Link>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
